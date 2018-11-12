@@ -27,7 +27,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.fenlan.flink.twitter.TwitterAnalysis</mainClass>
+                            <mainClass>com.fenlan.flink.twitter.TwitterStream</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -46,6 +46,7 @@
 
     <properties>
         <flink.version>1.6.1</flink.version>
+        <kafka.version>1.0.0</kafka.version>
     </properties>
 
     <dependencies>
@@ -84,6 +85,20 @@
             <artifactId>pubnub-gson</artifactId>
             <version>4.21.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
