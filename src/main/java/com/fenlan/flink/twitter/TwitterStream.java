@@ -11,16 +11,29 @@ import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
+import org.apache.kafka.clients.producer.*;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Properties;
 
 public class TwitterStream {
 
     public static void main(String[] args) {
+        String topicName = "twitterstream";
+        String kafkaClient = "zookeeper-server1:9092";
+
+        Properties props = new Properties();
+        props.put("bootstrap.servers", kafkaClient);//kafka clusterIP
+        props.put("acks", "1");
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
         PNConfiguration pnConfiguration = new PNConfiguration();
         pnConfiguration.setSubscribeKey("sub-c-78806dd4-42a6-11e4-aed8-02ee2ddab7fe");
 
         PubNub pubnub = new PubNub(pnConfiguration);
+        Producer<String, String> producer = new KafkaProducer<>(props);
 
         String channelName = "pubnub-twitter";
 
@@ -67,15 +80,13 @@ public class TwitterStream {
                 }
 
                 JsonElement receivedMessageObject = message.getMessage();
-                System.out.println("Received message content: " + receivedMessageObject.toString());
-                // extract desired parts of the payload, using Gson
-
-            /*
-                log the following items with your favorite logger
-                    - message.getMessage()
-                    - message.getSubscription()
-                    - message.getTimetoken()
-            */
+                Long timestamp = new Date(receivedMessageObject
+                        .getAsJsonObject().get("created_at")
+                        .toString().substring(1, 31))
+                        .getTime() / 1000;
+                producer.send(new ProducerRecord<>(
+                        topicName, 0, timestamp,
+                        "twitter-event", receivedMessageObject.toString()));
             }
 
             @Override
