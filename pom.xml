@@ -27,7 +27,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.fenlan.flink.wiki.WikipediaAnalysis</mainClass>
+                            <mainClass>com.fenlan.flink.twitter.TwitterAnalysis</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -78,6 +78,11 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pubnub</groupId>
+            <artifactId>pubnub-gson</artifactId>
+            <version>4.21.0</version>
         </dependency>
     </dependencies>
 
