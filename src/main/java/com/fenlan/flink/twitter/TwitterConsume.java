@@ -10,7 +10,7 @@ import java.util.Properties;
 public class TwitterConsume {
 
     private  String topicName;
-    private static String kafkaClusterIP = "176.122.152.6:9092";
+    private static String kafkaClusterIP = "kafka-server1:9092";
 
     public TwitterConsume(String topic){
         topicName = topic;

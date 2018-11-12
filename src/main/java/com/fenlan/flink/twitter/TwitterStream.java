@@ -21,7 +21,7 @@ public class TwitterStream {
 
     public static void main(String[] args) {
         String topicName = "twitterstream";
-        String kafkaClient = "zookeeper-server1:9092";
+        String kafkaClient = "kafka-server1:9092";
 
         Properties props = new Properties();
         props.put("bootstrap.servers", kafkaClient);//kafka clusterIP
