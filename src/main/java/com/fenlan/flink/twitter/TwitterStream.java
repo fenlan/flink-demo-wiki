@@ -86,7 +86,14 @@ public class TwitterStream {
                         .getTime() / 1000;
                 producer.send(new ProducerRecord<>(
                         topicName, 0, timestamp,
-                        "twitter-event", receivedMessageObject.toString()));
+                        "twitter-event", receivedMessageObject.toString()), new Callback() {
+                    @Override
+                    public void onCompletion(RecordMetadata metadata, Exception e) {
+                        if (e != null)
+                            System.out.println(e);
+                        System.out.println("The offset of the record we just sent is: " + metadata.offset());
+                    }
+                });
             }
 
             @Override
