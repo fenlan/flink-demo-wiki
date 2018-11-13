@@ -28,22 +28,34 @@ public class TwitterAnalysis {
         DataStream<JsonObject> streamSource = env.addSource(consumer).setParallelism(3)
                 .map(TwitterAnalysis::parse).setParallelism(3);
         DataStream<Tuple2<String, Long>> countryCount = streamSource
-                .map(TwitterAnalysis::countryTuple).setParallelism(3)
+                .map(TwitterAnalysis::countryTuple).setParallelism(1)
+                .keyBy(tuple -> tuple.f0)
+                .timeWindow(Time.seconds(5))
+                .reduce((t1, t2) -> new Tuple2<>(t1.f0, t1.f1+t2.f1)).setParallelism(1);
+        DataStream<Tuple2<String, Long>> langCount = streamSource
+                .map(TwitterAnalysis::langTuple).setParallelism(1)
                 .keyBy(tuple -> tuple.f0)
                 .timeWindow(Time.seconds(5))
                 .reduce((t1, t2) -> new Tuple2<>(t1.f0, t1.f1+t2.f1)).setParallelism(1);
         countryCount.print().setParallelism(1);
+        langCount.print().setParallelism(1);
         env.execute();
     }
 
     private static JsonObject parse(String json) {
         JsonObject object = new JsonParser().parse(json).getAsJsonObject();
-        log.info(object.get("place").getAsJsonObject().get("country"));
+//        log.info(object.get("place").getAsJsonObject().get("country"));
         return object;
     }
 
     private static Tuple2<String, Long> countryTuple(JsonObject object) {
         String country = object.get("place").getAsJsonObject().get("country").toString();
         return new Tuple2<>(country, 1L);
+    }
+
+    private static Tuple2<String, Long> langTuple(JsonObject object) {
+        String lang = object.get("lang").toString();
+//        log.info(lang);
+        return new Tuple2<>(lang, 1L);
     }
 }
