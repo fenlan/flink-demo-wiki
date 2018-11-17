@@ -44,18 +44,20 @@ public class TwitterAnalysis {
 
     private static JsonObject parse(String json) {
         JsonObject object = new JsonParser().parse(json).getAsJsonObject();
-//        log.info(object.get("place").getAsJsonObject().get("country"));
         return object;
     }
 
     private static Tuple2<String, Long> countryTuple(JsonObject object) {
-        String country = object.get("place").getAsJsonObject().get("country").toString();
-        return new Tuple2<>(country, 1L);
+        try {
+            String country = object.get("place").getAsJsonObject().get("country").toString();
+            return new Tuple2<>(country, 1L);
+        } catch (Exception e) {
+            return new Tuple2<>("undefine", 1L);
+        }
     }
 
     private static Tuple2<String, Long> langTuple(JsonObject object) {
         String lang = object.get("lang").toString();
-//        log.info(lang);
         return new Tuple2<>(lang, 1L);
     }
 }
