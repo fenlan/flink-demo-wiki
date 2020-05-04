@@ -10,7 +10,7 @@ import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.time.Time;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import redis.clients.jedis.Jedis;
 
 import java.util.Properties;
@@ -34,8 +34,8 @@ public class TwitterAnalysis {
         env.getCheckpointConfig().setCheckpointTimeout(60000);
         env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
 
-        FlinkKafkaConsumer010<String> consumer =
-                new FlinkKafkaConsumer010<>("twitterstream", new SimpleStringSchema(), properties);
+        FlinkKafkaConsumer<String> consumer =
+                new FlinkKafkaConsumer<>("twitterstream", new SimpleStringSchema(), properties);
         consumer.setStartFromLatest();
 
         DataStream<JsonObject> streamSource = env.addSource(consumer).setParallelism(3)
